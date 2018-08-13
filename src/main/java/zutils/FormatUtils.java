@@ -32,7 +32,6 @@ public class FormatUtils {
 	private static String formatString(String value) {
 
 		String result = formatDecimal(new BigDecimal(value));
-		System.out.println(result);
 		return result;
 	}
 
