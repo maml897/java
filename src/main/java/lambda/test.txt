@@ -1,0 +1,8 @@
+一个List 可转成一个 Map 
+一个List 可转成一个 List<Map>
+
+Consumer 有参数 ，无返回，
+Function 有参数	，有返回，
+Supplier 无参数	，有返回，
+
+都可以写代码行或者代码块，写代码块的时候，如果有返回的那手动return
