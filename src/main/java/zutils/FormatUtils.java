@@ -19,6 +19,7 @@ public class FormatUtils {
 
 	/**
 	 * float 转成double
+	 * 
 	 * @param value
 	 * @return
 	 */
@@ -27,30 +28,32 @@ public class FormatUtils {
 		String result = formatString(stringValue);
 		return new BigDecimal(result).doubleValue();
 	}
-	
+
 	/**
 	 * 格式化float，返回float
+	 * 
 	 * @param value
 	 * @return
 	 */
 	public static float formatFloat(float value) {
-		String result =float2String(value);
+		String result = float2String(value);
 		return new BigDecimal(result).floatValue();
 	}
-	
+
 	/**
 	 * 格式化float，返回float
+	 * 
 	 * @param value
 	 * @return
 	 */
 	public static double formatDouble(double value) {
-		String result =double2String(value);
+		String result = double2String(value);
 		return new BigDecimal(result).doubleValue();
 	}
-	
-	
+
 	/**
 	 * 格式化float，返回string
+	 * 
 	 * @param value
 	 * @return
 	 */
@@ -62,6 +65,7 @@ public class FormatUtils {
 
 	/**
 	 * 格式化double，返回string
+	 * 
 	 * @param value
 	 * @return
 	 */
@@ -69,6 +73,57 @@ public class FormatUtils {
 		String stringValue = String.valueOf(value);
 		String result = formatString(stringValue);
 		return result;
+	}
+
+	/**
+	 * 除法
+	 * 
+	 * @param a
+	 * @param b
+	 * @param scale
+	 * @return
+	 */
+	public static BigDecimal division(float a, float b, int scale) {
+		if (b == 0) {
+			return new BigDecimal(0);
+		}
+
+		BigDecimal b1 = new BigDecimal(String.valueOf(a));
+		BigDecimal b2 = new BigDecimal(String.valueOf(b));
+		return b1.divide(b2, scale, BigDecimal.ROUND_HALF_UP);
+	}
+
+	/**
+	 * 除法
+	 * 
+	 * @param a
+	 * @param b
+	 * @param scale
+	 * @return
+	 */
+	public static BigDecimal division(double a, double b, int scale) {
+		if (b == 0) {
+			return new BigDecimal(0);
+		}
+
+		BigDecimal b1 = new BigDecimal(String.valueOf(a));
+		BigDecimal b2 = new BigDecimal(String.valueOf(b));
+		return b1.divide(b2, scale, BigDecimal.ROUND_HALF_UP);
+	}
+
+	/**
+	 * 四舍五入
+	 * 
+	 * @param v
+	 * @return
+	 */
+	public static float round(float v, int... scales) {
+		int scale = 2;
+		if (scales != null && scales.length > 0) {
+			scale = scales[0];
+		}
+		BigDecimal b = new BigDecimal(Float.toString(v));
+		return b.divide(new BigDecimal("1"), scale, BigDecimal.ROUND_HALF_UP).floatValue();
 	}
 
 	private static String formatString(String value) {
@@ -84,6 +139,7 @@ public class FormatUtils {
 
 	/**
 	 * 去掉0.20 最后的0
+	 * 
 	 * @param f
 	 * @return
 	 */
@@ -95,5 +151,5 @@ public class FormatUtils {
 			return f + "";
 		}
 	}
-	
+
 }
