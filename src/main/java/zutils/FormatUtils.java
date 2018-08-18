@@ -28,13 +28,43 @@ public class FormatUtils {
 		return new BigDecimal(result).doubleValue();
 	}
 	
+	/**
+	 * 格式化float，返回float
+	 * @param value
+	 * @return
+	 */
+	public static float formatFloat(float value) {
+		String result =float2String(value);
+		return new BigDecimal(result).floatValue();
+	}
 	
+	/**
+	 * 格式化float，返回float
+	 * @param value
+	 * @return
+	 */
+	public static double formatDouble(double value) {
+		String result =double2String(value);
+		return new BigDecimal(result).doubleValue();
+	}
+	
+	
+	/**
+	 * 格式化float，返回string
+	 * @param value
+	 * @return
+	 */
 	public static String float2String(float value) {
 		String stringValue = String.valueOf(value);
 		String result = formatString(stringValue);
 		return result;
 	}
 
+	/**
+	 * 格式化double，返回string
+	 * @param value
+	 * @return
+	 */
 	public static String double2String(double value) {
 		String stringValue = String.valueOf(value);
 		String result = formatString(stringValue);
@@ -42,7 +72,6 @@ public class FormatUtils {
 	}
 
 	private static String formatString(String value) {
-
 		String result = formatDecimal(new BigDecimal(value));
 		return result;
 	}
@@ -58,7 +87,7 @@ public class FormatUtils {
 	 * @param f
 	 * @return
 	 */
-	public static String formatFloat(float f) {
+	public static String formatFloatZero(float f) {
 		int i = (int) f;
 		if (i == f) {
 			return i + "";
