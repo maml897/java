@@ -11,8 +11,7 @@ public class Test {
 		test(f);
 	}
 	
-	private static float test(double d){
+	private static void test(double d){
 		System.out.println(String.valueOf(d));
-		return 0;
 	}
 }
