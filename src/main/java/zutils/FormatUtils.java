@@ -76,21 +76,37 @@ public class FormatUtils {
 	}
 
 	/**
-	 * 除法
+	 * 除法，返回精度两位小数
+	 * 
+	 * @param a
+	 * @param b
+	 * @param multiply100，如果不乘以100.填写false，否则不用填写或者true
+	 * @return
+	 */
+	public static float division(float a, float b, boolean... multiply100) {
+		return division(a, b, 2, multiply100);
+	}
+
+	/**
+	 * 除法，可以设置返回精度
 	 * 
 	 * @param a
 	 * @param b
 	 * @param scale
+	 * @param multiply100
 	 * @return
 	 */
-	public static BigDecimal division(float a, float b, int scale) {
+	public static float division(float a, float b, int scale, boolean... multiply100) {
 		if (b == 0) {
-			return new BigDecimal(0);
+			return 0;
 		}
-
-		BigDecimal b1 = new BigDecimal(String.valueOf(a));
-		BigDecimal b2 = new BigDecimal(String.valueOf(b));
-		return b1.divide(b2, scale, BigDecimal.ROUND_HALF_UP);
+		if (multiply100 != null && multiply100.length > 0 && !multiply100[0]) {
+			return new BigDecimal(String.valueOf(a))
+					.divide(new BigDecimal(String.valueOf(b)), scale, BigDecimal.ROUND_HALF_UP).floatValue();
+		}
+		return new BigDecimal(String.valueOf(a))
+				.divide(new BigDecimal(String.valueOf(b)), scale + 2, BigDecimal.ROUND_HALF_UP)
+				.multiply(new BigDecimal("100")).floatValue();
 	}
 
 	/**
@@ -101,7 +117,7 @@ public class FormatUtils {
 	 * @param scale
 	 * @return
 	 */
-	public static BigDecimal division(double a, double b, int scale) {
+	private static BigDecimal division(double a, double b, int scale) {
 		if (b == 0) {
 			return new BigDecimal(0);
 		}
@@ -114,15 +130,15 @@ public class FormatUtils {
 	/**
 	 * 四舍五入
 	 * 
-	 * @param v
+	 * @param value
 	 * @return
 	 */
-	public static float round(float v, int... scales) {
+	public static float round(float value, int... scales) {
 		int scale = 2;
 		if (scales != null && scales.length > 0) {
 			scale = scales[0];
 		}
-		BigDecimal b = new BigDecimal(Float.toString(v));
+		BigDecimal b = new BigDecimal(Float.toString(value));
 		return b.divide(new BigDecimal("1"), scale, BigDecimal.ROUND_HALF_UP).floatValue();
 	}
 
