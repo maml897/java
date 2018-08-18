@@ -13,7 +13,7 @@ public class Wenti
 		System.out.println(String.valueOf(d));
 		System.out.println(d.toString());
 
-		double d1 = 301353.0499999999883584678173065185546875d;
+		double d1 = 301353.04999999998835846781730651855468754444444444444444444444444444444444444444444444444444d;
 		System.out.println(d1);
 		System.out.println(String.valueOf(d1));
 

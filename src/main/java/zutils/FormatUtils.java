@@ -149,7 +149,7 @@ public class FormatUtils {
 	}
 
 	private static String formatDecimal(BigDecimal value) {
-		DecimalFormat decimalFormat = new DecimalFormat("0.##");
+		DecimalFormat decimalFormat = new DecimalFormat("0.###################");
 		decimalFormat.setRoundingMode(RoundingMode.HALF_UP);
 		return decimalFormat.format(value);
 	}
@@ -169,4 +169,6 @@ public class FormatUtils {
 		}
 	}
 
+	//String.valueOf 把各种类型转成string也有问题
+	//还可以String x = new BigDecimal(double).toString();，但是float怎么办
 }
