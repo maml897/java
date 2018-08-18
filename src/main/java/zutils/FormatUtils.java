@@ -17,6 +17,18 @@ public class FormatUtils {
 		System.out.println(String.valueOf(172.50));
 	}
 
+	/**
+	 * float 转成double
+	 * @param value
+	 * @return
+	 */
+	public static double float2double(float value) {
+		String stringValue = String.valueOf(value);
+		String result = formatString(stringValue);
+		return new BigDecimal(result).doubleValue();
+	}
+	
+	
 	public static String float2String(float value) {
 		String stringValue = String.valueOf(value);
 		String result = formatString(stringValue);
@@ -40,4 +52,19 @@ public class FormatUtils {
 		decimalFormat.setRoundingMode(RoundingMode.HALF_UP);
 		return decimalFormat.format(value);
 	}
+
+	/**
+	 * 去掉0.20 最后的0
+	 * @param f
+	 * @return
+	 */
+	public static String formatFloat(float f) {
+		int i = (int) f;
+		if (i == f) {
+			return i + "";
+		} else {
+			return f + "";
+		}
+	}
+	
 }
