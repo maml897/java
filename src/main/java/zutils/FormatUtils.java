@@ -108,28 +108,10 @@ public class FormatUtils {
 				.divide(new BigDecimal(String.valueOf(b)), scale + 2, BigDecimal.ROUND_HALF_UP)
 				.multiply(new BigDecimal("100")).floatValue();
 	}
-
-	/**
-	 * 除法
-	 * 
-	 * @param a
-	 * @param b
-	 * @param scale
-	 * @return
-	 */
-	private static BigDecimal division(double a, double b, int scale) {
-		if (b == 0) {
-			return new BigDecimal(0);
-		}
-
-		BigDecimal b1 = new BigDecimal(String.valueOf(a));
-		BigDecimal b2 = new BigDecimal(String.valueOf(b));
-		return b1.divide(b2, scale, BigDecimal.ROUND_HALF_UP);
-	}
-
+	
 	/**
 	 * 四舍五入
-	 * 
+	 * 和formatFloat效果一致
 	 * @param value
 	 * @return
 	 */
@@ -140,6 +122,25 @@ public class FormatUtils {
 		}
 		BigDecimal b = new BigDecimal(Float.toString(value));
 		return b.divide(new BigDecimal("1"), scale, BigDecimal.ROUND_HALF_UP).floatValue();
+	}
+
+	/**
+	 * 除法
+	 * 
+	 * @param a
+	 * @param b
+	 * @param scale
+	 * @return
+	 */
+	@SuppressWarnings("unused")
+	private static BigDecimal division(double a, double b, int scale) {
+		if (b == 0) {
+			return new BigDecimal(0);
+		}
+
+		BigDecimal b1 = new BigDecimal(String.valueOf(a));
+		BigDecimal b2 = new BigDecimal(String.valueOf(b));
+		return b1.divide(b2, scale, BigDecimal.ROUND_HALF_UP);
 	}
 
 	private static String formatString(String value) {
