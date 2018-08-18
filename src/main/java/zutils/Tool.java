@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-public class Utils {
+public class Tool {
 	/**
 	 * 返回values 中距离value 最近的值，可以上取，也可以下取
 	 * 类似浮点数上取值，下取值

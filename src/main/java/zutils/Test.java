@@ -6,6 +6,5 @@ public class Test {
 		
 		System.out.println(FormatUtils.round(f));
 		System.out.println(FormatUtils.formatFloat(f));
-		
 	}
 }
