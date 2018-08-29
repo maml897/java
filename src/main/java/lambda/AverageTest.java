@@ -2,6 +2,7 @@ package lambda;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class AverageTest {
 	public static void main(String[] args) {
@@ -19,5 +20,10 @@ public class AverageTest {
 				.mapToDouble(x -> x).summaryStatistics().getAverage();
 		
 		System.out.println(average1);
+		
+		
+		//第三中方法
+		double f=studentIDs.stream().collect(Collectors.averagingLong(x -> x));
+		System.out.println(f);
 	}
 }
