@@ -58,7 +58,7 @@ public class LambdaUtils
 		return list.stream().collect(Collectors.groupingBy(groupExtractor, LinkedHashMap::new, Collectors.groupingBy(keyExtractor, LinkedHashMap::new, Collectors.toList())));
 	}
 	
-	public static <T, U, K> Map<U, K> groupby3(List<T> list, Function<T, U> groupExtractor, Collector<T, U, K> c)
+	public static <T, U, K> Map<U, K> groupby(List<T> list, Function<T, U> groupExtractor, Collector<T, U, K> c)
 	{
 		return list.stream().collect(Collectors.groupingBy(groupExtractor, LinkedHashMap::new,c));
 	}
