@@ -17,7 +17,7 @@ public class DoubleError {
 		DecimalFormat decimalFormat = new DecimalFormat("0.##");
 		decimalFormat.setRoundingMode(RoundingMode.HALF_UP);
 		
-		System.out.println(decimalFormat.format(d));// 错误
+		System.out.println(decimalFormat.format(d)+"===");// 错误
 		System.out.println(decimalFormat.format(new BigDecimal(d)));// 错误
 		
 		

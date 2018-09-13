@@ -100,6 +100,7 @@ public class FormatUtils {
 		if (b == 0) {
 			return 0;
 		}
+		
 		if (multiply100 != null && multiply100.length > 0 && !multiply100[0]) {
 			return new BigDecimal(String.valueOf(a))
 					.divide(new BigDecimal(String.valueOf(b)), scale, BigDecimal.ROUND_HALF_UP).floatValue();
@@ -108,6 +109,8 @@ public class FormatUtils {
 				.divide(new BigDecimal(String.valueOf(b)), scale + 2, BigDecimal.ROUND_HALF_UP)
 				.multiply(new BigDecimal("100")).floatValue();
 	}
+	
+	
 	
 	/**
 	 * 四舍五入
@@ -150,6 +153,7 @@ public class FormatUtils {
 
 	private static String formatDecimal(BigDecimal value) {
 		DecimalFormat decimalFormat = new DecimalFormat("0.###################");
+		decimalFormat.setMaximumFractionDigits(4);
 		decimalFormat.setRoundingMode(RoundingMode.HALF_UP);
 		return decimalFormat.format(value);
 	}
