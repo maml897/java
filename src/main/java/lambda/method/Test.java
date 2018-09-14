@@ -16,8 +16,10 @@ public class Test
 		
 		// 对象的方法
 		Function<String, String> f1 = String::toUpperCase;
-		MyInterface<String, String> f12 = x -> x.toUpperCase();
 		Function<String, String> f11 = x -> x.toUpperCase();
+		
+		MyInterface<String, String> f3 = String::toUpperCase;
+		MyInterface<String, String> f31 = x -> x.toUpperCase();
 
 		Function<File, Boolean> f2 = File::isHidden;
 		Function<File, Boolean> f22 = x -> x.isHidden();
