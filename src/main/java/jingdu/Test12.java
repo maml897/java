@@ -19,7 +19,7 @@ public class Test12
         double z1= 300.000000000000003;
         double w1= 3000.00000000000003;
         
-        System.out.println(x1==3);
+        System.out.println(x1==3);//比如x1是计算的average，然后和总体的平局分3对比，获取大于平局分的，这里面其实就出问题了，因为x1 不大于3。
         System.out.println(y1==30);
         System.out.println(z1==300);
         System.out.println(w1==3000);
