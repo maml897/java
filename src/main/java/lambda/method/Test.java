@@ -2,11 +2,9 @@ package lambda.method;
 
 import java.io.File;
 import java.util.Comparator;
-import java.util.List;
+import java.util.function.BinaryOperator;
 import java.util.function.Function;
-import java.util.function.UnaryOperator;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.function.Supplier;
 
 public class Test
 {
@@ -24,12 +22,23 @@ public class Test
 		Function<File, Boolean> f2 = File::isHidden;
 		Function<File, Boolean> f22 = x -> x.isHidden();
 
-		// ?
 		Comparator<? super String> c = (x, y) -> x.compareToIgnoreCase(y);
 		Comparator<? super String> c1 = String::compareToIgnoreCase;
 
-		UnaryOperator<String> upperfier2 = (x) -> x.toUpperCase();// 这里没有参数，即0个
-		List<String> list = Stream.of("a").map(upperfier2).collect(Collectors.toList());
-		System.out.println(list);
+		BinaryOperator<Integer> bo = (sum, item) -> sum + item;
+		BinaryOperator<Integer> bo1 = Integer::sum;
+		
+		//构造器的方法
+		Supplier<Test> sup=Test::new;
+		MyInterface1<Test> sup1=Test::new;
+		
+		
+		//静态方法
+		Function<String, String> f4=Test::statictest;
+		MyInterface<String, String> f41 = Test::statictest;
+	}
+	
+	private static String statictest(String x){
+		return "";
 	}
 }

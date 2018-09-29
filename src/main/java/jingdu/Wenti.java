@@ -26,5 +26,11 @@ public class Wenti
 		System.out.println(decimalFormat.format(new BigDecimal(String.valueOf(162.535d))));// 正确
 		System.out.println(decimalFormat.format(new BigDecimal(String.valueOf(301353.0499999999883584678173065185546875d))));// 但是如果String.valueOf都不对的话，那结果也不对
 		
+		
+		double d2=162.535d;
+		BigDecimal d3=new BigDecimal(String.valueOf(d2));
+		
+		System.out.println(d3);
+		
 	}
 }
