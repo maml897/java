@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collector;
@@ -29,6 +30,18 @@ public class LambdaUtils
 	public static <U, T> List<T> list2list(Collection<U> list, Function<U, T> fun)
 	{
 		return list.stream().map(fun).collect(Collectors.toList());
+	}
+	
+	/**
+	 * map排序：
+	 * @param map
+	 * @param c：Entry.<Double,Long>comparingByKey().reversed()
+	 * @return
+	 */
+	public static <T, K> Map<T, K> mapOrder(Map<T, K> map,Comparator<Entry<T, K>> c)
+	{
+		Map<T, K> result=map.entrySet().stream().sorted(c).collect(Collectors.toMap(x->x.getKey(), x->x.getValue(), (key1, key2) -> key2, LinkedHashMap::new));
+		return result;
 	}
 
 	// list任意属性排序
