@@ -11,6 +11,7 @@ public class Float2Double {
 		System.out.println(right(f));
 		System.out.println(error(f));
 		System.out.println(error1(f));
+		System.out.println(error2(f));
 	}
 	
 	private static double right(float f){
@@ -25,6 +26,9 @@ public class Float2Double {
 		return new BigDecimal(f).doubleValue();
 	}
 	
+	private static double error2(float f){
+		return ((Float)f).doubleValue();
+	}
 	
 	
 	
