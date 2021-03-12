@@ -2,6 +2,7 @@ package ok;
 
 import java.math.BigDecimal;
 
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.NumberUtil;
 
 public class MathUtils {
@@ -41,11 +42,14 @@ public class MathUtils {
 	 * @param v2
 	 * @return
 	 */
-	public static double div(double v1,double v2) {
+	public static double div(double v1,double v2,int...scales) {
 		if(v2==0) {
 			return 0;
 		}
-		return NumberUtil.div(v1, v2);
+		if(scales == null || scales.length == 0) {
+			return NumberUtil.div(v1, v2);
+		}
+		return round(NumberUtil.div(v1, v2), scales);
 	}
 	
 	/**
@@ -72,11 +76,11 @@ public class MathUtils {
 	}
 	
 	/***
-	 * 去掉数字后面的0
+	 * 去掉数字后面的0，同下
 	 * @param f
 	 * @return
 	 */
-	private static String format(double f,int...scales)
+	public static String format(double f,int...scales)
 	{
 		f = round(f, scales);
 		int i = (int) f;
@@ -88,11 +92,11 @@ public class MathUtils {
 	}
 	
 	/***
-	 * 去掉数字后面的0
+	 * 去掉数字后面的0，同上
 	 * @param f
 	 * @return
 	 */
-	private static String format1(double f,int...scales)
+	public static String formatZero(double f,int...scales)
 	{
 		f = round(f, scales);
 		BigDecimal value = new BigDecimal(String.valueOf(f)).stripTrailingZeros();
@@ -100,15 +104,8 @@ public class MathUtils {
 	}
 	
 	public static void main(String[] args) {
-//		System.out.println(round(div(10,2)));;
-//		System.out.println(format(100.40));;
-		
-		long b=System.currentTimeMillis();
-		for(double i=1;i<1000000;i++) {
-			format1(i);
-//			format(i);
-		}
-		System.out.println(System.currentTimeMillis()-b);
+
+		System.out.println(Convert.toDouble("1000"));
 	    
 	}
 }
