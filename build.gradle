@@ -59,5 +59,6 @@ dependencies {
     compile 'org.glassfish.jersey.core:jersey-client:2.23.2'
     compile 'org.javassist:javassist:3.22.0-GA'
     compile group: 'org.jdom', name: 'jdom2', version: '2.0.6'
+    compile 'cn.hutool:hutool-all:5.5.9'
     //test12454722222222222222222
 }
