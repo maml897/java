@@ -14,11 +14,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.PriorityQueue;
 import java.util.Set;
-import java.util.function.Consumer;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.ToDoubleFunction;
 import java.util.stream.Collectors;
+
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
@@ -142,8 +143,8 @@ public class ComputeUtils {
 	 * @param map 分数-数量,需要排序
 	 * @return 分数-排名
 	 */
-	public static <T> Map<Double, Integer> computeOrderFromScoreCount(Map<Double, Long> map,boolean...ordereds) {
-		boolean ordered = ordereds != null && ordereds[0];
+	private static <T> Map<Double, Integer> computeOrderFromScoreCount(Map<Double, Long> map,boolean...ordereds) {
+		boolean ordered = ordereds != null && ordereds.length>0&& ordereds[0];
 		if(!ordered) {
 			map = map.entrySet().stream().sorted(Collections.reverseOrder(comparingByKey()))
 					.collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2, LinkedHashMap::new));
@@ -167,17 +168,20 @@ public class ComputeUtils {
 		Map<Double, Long> map = LambdaUtils.groupby(list, x -> x, Collectors.counting());// 每个分对应多少个学生
 		return computeOrderFromScoreCount(map);
 	}
-
+	
 	/**
 	 * 个面具具体业务计算排名
 	 * @param list 带分数的业务列表数据
 	 * @param scoreFun 获取分数的逻辑
 	 * @param orderCon 设置排名的逻辑
 	 */
-	public static <T> void computeOrder(List<T> list, Function<T, Double> scoreFun, Consumer<Integer> orderCon) {
+	public static <T> void computeOrder(List<T> list, Function<T, Double> scoreFun, BiFunction<T, Integer, T> action) {
 		List<Double> scores = LambdaUtils.list2list(list, scoreFun);
 		Map<Double, Integer> studentIDOrder = computeOrder(scores);
-		list.forEach(item -> orderCon.accept(studentIDOrder.get(scoreFun.apply(item))));
+		list.forEach(item -> {
+			int order=studentIDOrder.get(scoreFun.apply(item));
+			action.apply(item, order);
+		});
 	}
 
 	/**
