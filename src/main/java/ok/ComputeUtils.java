@@ -3,6 +3,7 @@ package ok;
 import static java.util.Map.Entry.comparingByKey;
 import static java.util.stream.Collectors.toMap;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -19,7 +20,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.ToDoubleFunction;
 import java.util.stream.Collectors;
-
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
@@ -312,14 +312,78 @@ public class ComputeUtils {
 		
 	}
 	
+	
+	/**
+	 * 获取分段
+	 * @param from
+	 *            开始值
+	 * @param to
+	 *            结束值
+	 * @param step
+	 *            步长
+	 * @param addZero
+	 *            是否加0，默认不加
+	 * @return
+	 */
+	public static List<Double> getSegments(double from, double to, double step, boolean... addZeros)
+	{
+
+		boolean addzreo = false;
+		if (addZeros != null && addZeros.length > 0)
+		{
+			addzreo = addZeros[0];
+		}
+
+		if (from == to)
+		{
+			if (addzreo && from != 0)
+			{
+				return Arrays.asList(from, 0d);
+			}
+			return Arrays.asList(from);
+		}
+
+		List<Double> list = new ArrayList<>();
+		if (from > to)
+		{
+			while (from > to)
+			{
+				list.add(from);
+				from = from - step;
+			}
+			if (!list.contains(to))
+			{
+				list.add(to);
+			}
+
+			if (addzreo && !list.contains(0d))
+			{
+				list.add(0d);
+			}
+
+		}
+		else
+		{
+			while (from < to)
+			{
+				list.add(from);
+				from = from + step;
+			}
+			if (!list.contains(to))
+			{
+				list.add(to);
+			}
+
+			if (addzreo && !list.contains(0d))
+			{
+				list.add(0, 0d);
+			}
+		}
+
+		return list;
+	}
+	
 	public static void main(String[] args) {
-		List<Double> list = Arrays.asList(70d, 70d, 80d, 80d, 50d, 50d, 50d);
-		System.out.println(computeOrder(list));
-		
-		Map<String,String> map =new HashMap<>();
-		
-		System.out.println(map.getClass().isAssignableFrom(LinkedHashMap.class));
-		
-		System.out.println(map instanceof LinkedHashMap);
+		System.out.println(getSegments(50, 10, 10, false));
 	}
 }
