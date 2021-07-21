@@ -47,6 +47,8 @@ public class LambdaUtils
 		return list.stream().collect(Collectors.groupingBy(groupExtractor, LinkedHashMap::new,c));
 	}
 	
+	
+	
 	/**
 	 * 单层分组
 	 * @param list
@@ -65,7 +67,7 @@ public class LambdaUtils
 	 * @param keyExtractor
 	 * @return
 	 */
-	public static <T, U, K> Map<U, Map<K, T>> groupby2map(List<T> list, Function<T, U> groupExtractor, Function<T, K> keyExtractor)
+	public static <T, U, K> Map<U, Map<K, T>> groupbymap(List<T> list, Function<T, U> groupExtractor, Function<T, K> keyExtractor)
 	{
 		return list.stream().collect(Collectors.groupingBy(groupExtractor, LinkedHashMap::new, Collectors.toMap(keyExtractor, x -> x, (key1, key2) -> key2, LinkedHashMap::new)));
 	}
@@ -77,7 +79,7 @@ public class LambdaUtils
 	 * @param keyExtractor
 	 * @return
 	 */
-	public static <T, U, K> Map<U, Map<K, List<T>>> groupby(List<T> list, Function<T, U> groupExtractor, Function<T, K> keyExtractor)
+	public static <T, U, K> Map<U, Map<K, List<T>>> groupby2(List<T> list, Function<T, U> groupExtractor, Function<T, K> keyExtractor)
 	{
 		return list.stream().collect(Collectors.groupingBy(groupExtractor, LinkedHashMap::new, Collectors.groupingBy(keyExtractor, LinkedHashMap::new, Collectors.toList())));
 	}
@@ -90,7 +92,7 @@ public class LambdaUtils
 	 * @param mapKey
 	 * @return
 	 */
-	public static <T, U, K,A> Map<U, Map<K, Map<A, T>>> groupby3(List<T> list, Function<T, U> firstKey, Function<T, K> secondKey, Function<T,A> mapKey) {
+	public static <T, U, K,A> Map<U, Map<K, Map<A, T>>> groupby2map(List<T> list, Function<T, U> firstKey, Function<T, K> secondKey, Function<T,A> mapKey) {
 		return list.stream().collect(Collectors.groupingBy(firstKey, LinkedHashMap::new,  Collectors.groupingBy(secondKey, LinkedHashMap::new, Collectors.toMap(mapKey, x -> x, (key1, key2) -> key2, LinkedHashMap::new))));
 	}
 	
