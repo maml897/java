@@ -3,3 +3,4 @@
 
 
 所以最终要用这个方法 DecimalFormat.format(new BigDecimal(String val)) // 转成字符串，如果再想转回取，则使用 BigDecimal(String val).floatValue()
+
