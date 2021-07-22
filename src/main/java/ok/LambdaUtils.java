@@ -1,5 +1,6 @@
 package ok;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -8,6 +9,9 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 
 public class LambdaUtils
 {
@@ -47,6 +51,24 @@ public class LambdaUtils
 		return list.stream().collect(Collectors.groupingBy(groupExtractor, LinkedHashMap::new,c));
 	}
 	
+	
+	
+	public static void main(String[] args) {
+		List<User> list=new ArrayList<>();
+		
+		Collection<? extends GrantedAuthority> authorities=new ArrayList<>();
+		User user=new User("a", "aa", authorities);
+		list.add(user);
+		user=new User("b", "bb", authorities);
+		list.add(user);
+		user=new User("d", "cc", authorities);
+		list.add(user);
+		user=new User("d", "dd", authorities);
+		list.add(user);
+		
+		Map<String, List<User>> map=list.stream().collect(Collectors.groupingBy(User::getUsername));
+		System.out.println(map.getClass());
+	}
 	
 	
 	/**
