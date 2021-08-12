@@ -523,6 +523,7 @@ public class ComputeUtils {
 		numbermap=LambdaUtils.whole4group(numbermap, types, x->x, 0l);
 		numbermap.put(2, Convert.toLong(seQuestions.size()));
 		
+		List<Map<String, Object>> result= new ArrayList<>();
 		for (Map<String, Object> map : predicates)
 		{
 			@SuppressWarnings("rawtypes")
@@ -537,29 +538,35 @@ public class ComputeUtils {
 			group.put(2, questions);
 			
 			for(int type:group.keySet()) {
+				Map<String, Object> item =new HashMap<>();
+				item.put("id", map.get("id"));
+				item.put("name", map.get("name"));
+				
 				List<T> typequestions=group.get(type);
 				
-				map.put("questionType", type);
-				map.put("questionTypeName", "合计");
+				item.put("questionType", type);
+				item.put("questionTypeName", "合计");
 				if(type!=2) {
-					map.put("questionTypeName", type==0?"非客观题":"客观题");
+					item.put("questionTypeName", type==0?"非客观题":"客观题");
 				}
 				
 				double score= typequestions.stream().mapToDouble(scoreFun).sum();
 				double totalScoreType= scoremap.containsKey(type)?scoremap.get(type):0;
-				map.put("score",score);
-				map.put("totalScore",totalScoreType);
-				map.put("scoreRate", MathUtils.divPercent(score, totalScoreType));
+				item.put("score",score);
+				item.put("totalScore",totalScoreType);
+				item.put("scoreRate", MathUtils.divPercent(score, totalScoreType));
 				
 				long totalNumberType=numbermap.containsKey(type)?numbermap.get(type):0;
-				map.put("number", typequestions.size());
-				map.put("totalNumber", totalNumberType);
-				map.put("numberRate", MathUtils.divPercent(typequestions.size(), totalNumberType));
+				item.put("number", typequestions.size());
+				item.put("totalNumber", totalNumberType);
+				item.put("numberRate", MathUtils.divPercent(typequestions.size(), totalNumberType));
 				
-				map.put("questionNames", LambdaUtils.list2list(typequestions, titleFun));
+				item.put("questionNames", LambdaUtils.list2list(typequestions, titleFun));
+				
+				result.add(item);
 			}
 		}
-		return predicates;
+		return result;
 	}
 	
 	
