@@ -245,6 +245,69 @@ public class ComputeUtils {
 		return MathUtils.round(MathUtils.div(dfa, average2), scales);
 	}
 
+	
+	
+	/**
+	 * 计算一个科目，或者一个小题的难度指数
+	 * @param segments，科目10分一段，小题5分一段
+	 * @param list 带计算学生成绩列表，包含两个属性，一个是总分t2totalscore，一个单科成绩t2score（或者一个是单科成绩，一个是小题成绩）
+	 * @param t2totalscore 总成绩或者单科成绩
+	 * @param t2score 单科成绩或者小题成绩
+	 * @param full 总分或者单科满分
+	 * @return
+	 */
+	public static <T> Map<Double,Double> difficultyIndex(List<Double> segments,List<T> list, Function<T, Double> t2totalscore, Function<T, Double> t2score, double full) {
+		if (full == 0 || segments.isEmpty()) {
+			return new LinkedHashMap<>();
+		}
+		
+		Map<Double, List<T>> map=LambdaUtils.groupby(list,x->ToolUtils.key(segments, t2totalscore.apply(x), true,true));
+		map=LambdaUtils.whole4group(map, segments, x->x, new ArrayList<>());
+		
+		Map<Double,Double> result=new LinkedHashMap<>();
+		for(Map.Entry<Double,List<T>> entry:map.entrySet()) {
+			double average = entry.getValue().stream().mapToDouble(x -> t2score.apply(x)).average().orElse(0);
+			double difficulty = MathUtils.div(average, full);
+			result.put(entry.getKey(), difficulty);
+		}
+		return result;
+	}
+	
+	/**
+	 * 难度指数的计算
+	 * @param list 带计算学生成绩列表，包含两个属性，一个是总分t2totalscore，一个单科成绩t2score（或者一个是单科成绩，一个是小题成绩）
+	 * @param t2totalscore 总成绩或者单科成绩
+	 * @param t2score 单科成绩或者小题成绩
+	 * @param full 总分或者单科满分
+	 * @param max
+	 * @param min
+	 * @return
+	 */
+	public static <T> double difficultyIndex(List<T> list, Function<T, Double> t2totalscore, Function<T, Double> t2score, double full, double max, double min) {
+		if (full == 0) {
+			return 0;
+		}
+		List<T> result = LambdaUtils.filter(list, x -> {
+			double totalscore = t2totalscore.apply(x);
+			if (totalscore <= max && totalscore > min) {
+				return true;
+			}
+			return false;
+		});
+
+		double difficulty = 0;
+		try {
+			double average = result.stream().mapToDouble(map -> t2score.apply(map)).average().orElse(0);
+			difficulty = MathUtils.div(average, full);
+		} catch (Exception e) {
+
+		}
+		return difficulty;
+	}
+	
+	//////////////////////////////////////////////////////////////////////下面的待完善////////////////////////////////////////////////////////////////////////////////////////
+	
+	
 	/**
 	 * 获取一个小题的区分度
 	 * @param orderedStudentIds 排序好的的待计算的学生列表，一般是按照总分或者单科总分排序
@@ -284,38 +347,7 @@ public class ComputeUtils {
 		return new double[] { 0, 0, 0, 0, 0 };
 	}
 
-	/**
-	 * 难度指数的计算
-	 * @param list 带计算学生成绩列表，包含两个属性，一个是总分t2totalscore，一个单科成绩t2score（或者一个是单科成绩，一个是小题成绩）
-	 * @param t2totalscore 总成绩或者单科成绩
-	 * @param t2score 单科成绩或者小题成绩
-	 * @param full 总分或者单科满分
-	 * @param max
-	 * @param min
-	 * @return
-	 */
-	public static <T> double difficultyIndex(List<T> list, Function<T, Double> t2totalscore, Function<T, Double> t2score, double full, double max, double min) {
-		if (full == 0) {
-			return 0;
-		}
-		List<T> result = LambdaUtils.filter(list, x -> {
-			double totalscore = t2totalscore.apply(x);
-			if (totalscore <= max && totalscore > min) {
-				return true;
-			}
-			return false;
-		});
-
-		double difficulty = 0;
-		try {
-			double average = result.stream().mapToDouble(map -> t2score.apply(map)).average().orElse(0);
-			difficulty = MathUtils.div(average, full);
-		} catch (Exception e) {
-
-		}
-		return difficulty;
-	}
-
+	
 	//信度
 	void reliability(){
 		

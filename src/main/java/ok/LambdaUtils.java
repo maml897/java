@@ -129,4 +129,20 @@ public class LambdaUtils
 	{
 		return list.stream().collect(Collectors.partitioningBy(keyExtractor));
 	}
+	
+	
+	public static <T, U, X> Map<U, T> whole4group(Map<U, T> map, List<X> list, Function<X, U> fun,T defaultt)
+	{
+		Map<U, T> newmap=new LinkedHashMap<>();
+		for(X x:list) {
+			U u = fun.apply(x);
+			if(map.containsKey(u)) {
+				newmap.put(u, map.get(u));
+			}
+			else {
+				newmap.put(u, defaultt);
+			}
+		}
+		return newmap;
+	}
 }
