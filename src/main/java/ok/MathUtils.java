@@ -53,6 +53,19 @@ public class MathUtils {
 	}
 	
 	/**
+	 * 除法百分比形式
+	 * @param v1
+	 * @param v2
+	 * @param scales
+	 * @return
+	 */
+	public static double divPercent(double v1,double v2,int...scales) {
+		int scale = (scales == null || scales.length == 0) ? 2 : scales[0];
+		double result=div(v1, v2);
+		return round(mul(result, 100), scale);
+	}
+	
+	/**
 	 * 保留几位小数,后面会出现.0，比如输入100，输出100.0
 	 * @param d
 	 * @param scales
