@@ -103,6 +103,102 @@ public class MathUtils {
 	    return value.toPlainString();
 	}
 	
+	
+	
+	
+	
+	///////////////////////浮点数比较//////////////////////////
+	
+	/**
+	 * hutool提供的比较方法
+	 * @param x
+	 * @param y
+	 * @param n
+	 * @return
+	 */
+	private static int compareNPoint(Object x, Object y, int n) {
+		BigDecimal number1 = new BigDecimal(String.valueOf(x));
+		BigDecimal number2 = new BigDecimal(String.valueOf(y));
+		double n1 = NumberUtil.round(number1, n).doubleValue();
+		double n2 = NumberUtil.round(number2, n).doubleValue();
+		return NumberUtil.compare(n1, n2);
+	}
+	
+	/**
+	 * 三个数比较，可以指定位数，默认2位
+	 * @param x
+	 * @param type1
+	 * @param data
+	 * @param type2
+	 * @param y
+	 * @param scales
+	 * @return
+	 */
+	private static boolean compareNPoint(Object x,String type1, Object data,String type2,Object y,int... scales) {
+		int scale = (scales == null || scales.length == 0) ? 2 : scales[0];
+		return compareNPoint(x, data,type1, scale) && compareNPoint(data, y,type2, scale);
+	}
+	
+	/**
+	 * 三个数比较，4位
+	 * @param x
+	 * @param type1
+	 * @param data
+	 * @param type2
+	 * @param y
+	 * @return
+	 */
+	public static boolean compare4Point(Object x, String type1, Object data,String type2,Object y) {
+		return compareNPoint(x,type1,data, type2, y,4);
+	}
+	
+	/**
+	 * 两个数比较，4位
+	 * @param x
+	 * @param type
+	 * @param y
+	 * @return
+	 */
+	public static boolean compare4Point(Object x, String type,Object y) {
+		return compareNPoint(x, y, type,4);
+	}
+	
+	/**
+	 * 两个数比较，可以设置位数，不设置则默认2位
+	 * @param x 
+	 * @param y
+	 * @param type
+	 * @param scale
+	 * @return
+	 */
+	public static boolean compareNPoint(Object x, Object y,String type,int... scales) {
+		int scale = (scales == null || scales.length == 0) ? 2 : scales[0];
+		if(type.equals(">=")) {
+			return compareNPoint(x, y, scale)>=0;
+		}
+		if(type.equals(">")) {
+			return compareNPoint(x, y, scale)==1;
+		}
+		if(type.equals("<=")) {
+			return compareNPoint(x, y, scale)<=0;
+		}
+		if(type.equals("<")) {
+			return compareNPoint(x, y, scale)==-1;
+		}
+		if(type.equals("==") || type.equals("=")) {
+			return compareNPoint(x, y, scale)==0;
+		}
+		return false;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	public static void main(String[] args) {
 
 		System.out.println(Convert.toDouble("1000"));
