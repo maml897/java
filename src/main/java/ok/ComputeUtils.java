@@ -317,7 +317,7 @@ public class ComputeUtils {
 	
 	
 	/**
-	 * 计算分数段，可以自定义收集方式
+	 * 计算分数段，可以自定义收集方式,一般其他的用score表计算，班级的可以用这个方法计算因为班级没有score表
 	 * @param top
 	 * @param bottom
 	 * @param step
@@ -495,6 +495,7 @@ public class ComputeUtils {
 	
 	//难度，区分度分组
 	//客观题选项统计，主观题得分统计
+	//学生小题得分也可以用score表，这样统计每个小题的得分会简单，客观题存储另外一个表格？
 	
 	
 	/**
