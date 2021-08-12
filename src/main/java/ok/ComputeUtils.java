@@ -19,6 +19,8 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.ToDoubleFunction;
+import java.util.function.ToIntFunction;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import cn.hutool.core.collection.CollUtil;
@@ -313,58 +315,97 @@ public class ComputeUtils {
 	
 	
 	
-	//////////////////////////////////////////////////////////////////////下面的待完善////////////////////////////////////////////////////////////////////////////////////////
-	
-	
-	
-	//难度，区分度分组
-	//分数段
-	//客观题选项统计，主观题得分统计
-	
 	
 	/**
-	 * 获取一个小题的区分度
-	 * @param orderedStudentIds 排序好的的待计算的学生列表，一般是按照总分或者单科总分排序
-	 * @param ts 一般是指 questionStudent
-	 * @param t2studentID  
-	 * @param t2questionID
-	 * @param t2score
-	 * @param score 小题满分
-	 * @return  奇葩，statistics是去除0分的人数，orderedStudentIds是包含0分的
+	 * 计算分数段，可以自定义收集方式
+	 * @param top
+	 * @param bottom
+	 * @param step
+	 * @param objects
+	 * @param scoreExtractor
+	 * @param c
+	 * @param withSums
+	 * @return
 	 */
-	public static <T> double[] discrimination(List<Long> orderedStudentIds, List<T> ts, Function<T, Long> t2studentID, Function<T, Float> t2score, float score) {
-		int number = orderedStudentIds.size();
-		if (number == 0) {
-			return new double[] { 0, 0, 0, 0, 0 };
+	@SafeVarargs
+	public static <T, U> List<Map<String, Object>> computeSegments(double top, double bottom, double step, List<T> objects, Function<T, Double> scoreExtractor, Collector<T, ?, ?>... collectors)
+	{
+		Collector<T, ?, ?> collector = Collectors.counting();
+		if (collectors != null && collectors.length > 0)
+		{
+			collector = collectors[0];
+		}
+		
+		List<Double> temp = getSegments(top, bottom, step);
+		List<Double> segments = new ArrayList<>(temp);
+		if (!segments.contains(0d))
+		{
+			segments.add(0d);
+		}
+		Map<Double, ?> map = LambdaUtils.groupby(objects, x -> ToolUtils.key(segments, scoreExtractor.apply(x), false, false), collector);
+		
+		List<Map<String, Object>> list = new ArrayList<>();
+		int size=segments.size();
+		for (int i = 0; i <size;  i++)
+		{
+			double key = segments.get(i);
+			Integer count = 0;
+			Object o = map.get(key);
+			if (o != null)
+			{
+				count = Integer.parseInt(o.toString());
+			}
+
+			Map<String, Object> onemap = new HashMap<>();
+			onemap.put("id", key);
+			onemap.put("count", count);
+			if (i == 0)
+			{
+				onemap.put("desc", MathUtils.format(key) + "以上");
+				onemap.put("min", key);
+				onemap.put("max", Integer.MAX_VALUE);
+			}
+			else if (i == size-1)
+			{
+				onemap.put("desc", MathUtils.format(segments.get(i - 1)) + "以下");
+				onemap.put("min", Integer.MIN_VALUE);
+				onemap.put("max", segments.get(i - 1));
+			}
+			else
+			{
+				onemap.put("desc", MathUtils.format(key) + "-" + MathUtils.format(segments.get(i - 1)));
+				onemap.put("min", key);
+				onemap.put("max", segments.get(i - 1));
+			}
+			list.add(onemap);
 		}
 
-		// 这里实现的有问题，hnum和lnum应该是一样的，比如100个人，那么前27% 和后27%是一样的都是 27个人。
-		int hnum = number * 27 / 100;
-		int lnum = number - number * 73 / 100;
-		if (hnum + lnum > 3 && lnum > 0 && hnum > 0) {
-			// 前27%
-			List<Long> hstudentList = CollUtil.sub(orderedStudentIds, 0, hnum);
-			Set<Long> sets = new HashSet<>(hstudentList);
-			List<T> hs = LambdaUtils.filter(ts, x -> sets.contains(t2studentID.apply(x)));
-			double havg = hs.stream().mapToDouble(x -> t2score.apply(x)).average().orElse(0);
-
-			// 后27%
-			List<Long> lstudentList = CollUtil.sub(orderedStudentIds, number - lnum, number);
-			Set<Long> sets1 = new HashSet<>(lstudentList);
-			List<T> ls = LambdaUtils.filter(ts, x -> sets1.contains(t2studentID.apply(x)));
-			double lavg = ls.stream().mapToDouble(x -> t2score.apply(x)).average().orElse(0);
-
-			double result = (havg - lavg) / score;
-			return new double[] { hnum, havg, lnum, lavg, result };
+		// 累计
+		int sum = 0;
+		for (Map<String, Object> onemap : list)
+		{
+			int number = (int) onemap.get("count");
+			sum += number;
+			onemap.put("sum", sum);
 		}
-
-		return new double[] { 0, 0, 0, 0, 0 };
+		return list;
 	}
 
-	
-	//信度
-	void reliability(){
-		
+	/**
+	 * 计算分数段，需要基础表 score
+	 * @param top
+	 * @param bottom
+	 * @param step
+	 * @param objects
+	 * @param scoreExtractor
+	 * @param countExtractor
+	 * @param withSums
+	 * @return
+	 */
+	public static <T, U> List<Map<String, Object>> computeSegments(double top, double bottom, double step, List<T> objects, Function<T, Double> scoreExtractor, ToIntFunction<T> countExtractor)
+	{
+		List<Map<String, Object>> list = computeSegments(top, bottom, step, objects, scoreExtractor, Collectors.summingInt(countExtractor));
+		return list;
 	}
 	
 	
@@ -380,7 +421,7 @@ public class ComputeUtils {
 	 *            是否加0，默认不加
 	 * @return
 	 */
-	public static List<Double> getSegments(double from, double to, double step, boolean... addZeros)
+	private static List<Double> getSegments(double from, double to, double step, boolean... addZeros)
 	{
 
 		boolean addzreo = false;
@@ -437,6 +478,72 @@ public class ComputeUtils {
 
 		return list;
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	//////////////////////////////////////////////////////////////////////下面的待完善////////////////////////////////////////////////////////////////////////////////////////
+	
+	
+	
+	
+	//难度，区分度分组
+	//客观题选项统计，主观题得分统计
+	
+	
+	/**
+	 * 获取一个小题的区分度
+	 * @param orderedStudentIds 排序好的的待计算的学生列表，一般是按照总分或者单科总分排序
+	 * @param ts 一般是指 questionStudent
+	 * @param t2studentID  
+	 * @param t2questionID
+	 * @param t2score
+	 * @param score 小题满分
+	 * @return  奇葩，statistics是去除0分的人数，orderedStudentIds是包含0分的
+	 */
+	public static <T> double[] discrimination(List<Long> orderedStudentIds, List<T> ts, Function<T, Long> t2studentID, Function<T, Float> t2score, float score) {
+		int number = orderedStudentIds.size();
+		if (number == 0) {
+			return new double[] { 0, 0, 0, 0, 0 };
+		}
+
+		// 这里实现的有问题，hnum和lnum应该是一样的，比如100个人，那么前27% 和后27%是一样的都是 27个人。
+		int hnum = number * 27 / 100;
+		int lnum = number - number * 73 / 100;
+		if (hnum + lnum > 3 && lnum > 0 && hnum > 0) {
+			// 前27%
+			List<Long> hstudentList = CollUtil.sub(orderedStudentIds, 0, hnum);
+			Set<Long> sets = new HashSet<>(hstudentList);
+			List<T> hs = LambdaUtils.filter(ts, x -> sets.contains(t2studentID.apply(x)));
+			double havg = hs.stream().mapToDouble(x -> t2score.apply(x)).average().orElse(0);
+
+			// 后27%
+			List<Long> lstudentList = CollUtil.sub(orderedStudentIds, number - lnum, number);
+			Set<Long> sets1 = new HashSet<>(lstudentList);
+			List<T> ls = LambdaUtils.filter(ts, x -> sets1.contains(t2studentID.apply(x)));
+			double lavg = ls.stream().mapToDouble(x -> t2score.apply(x)).average().orElse(0);
+
+			double result = (havg - lavg) / score;
+			return new double[] { hnum, havg, lnum, lavg, result };
+		}
+
+		return new double[] { 0, 0, 0, 0, 0 };
+	}
+
+	
+	//信度
+	void reliability(){
+		
+	}
+	
+	
+	
 	
 	public static void main(String[] args) {
 		System.out.println(getSegments(50, 10, 10, false));
