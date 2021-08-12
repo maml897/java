@@ -284,7 +284,16 @@ public class ComputeUtils {
 		return new double[] { 0, 0, 0, 0, 0 };
 	}
 
-	// 难度指数的计算
+	/**
+	 * 难度指数的计算
+	 * @param list 带计算学生成绩列表，包含两个属性，一个是总分t2totalscore，一个单科成绩t2score（或者一个是单科成绩，一个是小题成绩）
+	 * @param t2totalscore 总成绩或者单科成绩
+	 * @param t2score 单科成绩或者小题成绩
+	 * @param full 总分或者单科满分
+	 * @param max
+	 * @param min
+	 * @return
+	 */
 	public static <T> double difficultyIndex(List<T> list, Function<T, Double> t2totalscore, Function<T, Double> t2score, double full, double max, double min) {
 		if (full == 0) {
 			return 0;
