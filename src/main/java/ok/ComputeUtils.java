@@ -309,7 +309,7 @@ public class ComputeUtils {
 		double difficulty = 0;
 		try {
 			double average = result.stream().mapToDouble(map -> t2score.apply(map)).average().orElse(0);
-			difficulty = (float) average / full;
+			difficulty = MathUtils.div(average, full);
 		} catch (Exception e) {
 
 		}
