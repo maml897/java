@@ -19,7 +19,6 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.ToDoubleFunction;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import cn.hutool.core.collection.CollUtil;
