@@ -19,6 +19,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.ToDoubleFunction;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import cn.hutool.core.collection.CollUtil;
@@ -275,11 +276,56 @@ public class ComputeUtils {
 	
 	
 	
+	/**
+	 * 计算score表，分数的排名，数量，sum（例如 130对应的是 (130,满分]的人数）
+	 * @param objects //带计算得列表，要有分数数据
+	 * @param scorefun  分数数据
+	 * @return
+	 */
+	@SafeVarargs
+	public static <T> List<Map<String, Object>> computeScore(List<T> objects, Function<T, Double> scorefun, Collector<T, ?, Long>... cs)
+	{
+		Collector<T, ?, Long> c = Collectors.counting();
+		if (cs != null && cs.length > 0)
+		{
+			c = cs[0];
+		}
+		Map<Double, Long> group = LambdaUtils.groupby(objects, scorefun, c);
+		List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
+
+		int lastOrder = 1;
+		int lastCount = 0;
+		int lastSum = 0;
+
+		for (double score : group.keySet())
+		{
+			Map<String, Object> map = new HashMap<>();
+
+			int order = lastOrder + lastCount;//
+			int sum = lastCount + lastSum;//
+			int count = Integer.parseInt(String.valueOf(group.get(score)));
+
+			map.put("Score", score);
+			map.put("COrder", order);
+			map.put("CCount", count);
+			map.put("CSum", sum);
+			result.add(map);
+
+			lastOrder = order;
+			lastCount = count;
+			lastSum = sum;
+		}
+		return result;
+	}
+	
+	
+	
 	//////////////////////////////////////////////////////////////////////下面的待完善////////////////////////////////////////////////////////////////////////////////////////
 	
-	//计算score表
+	
+	
+	//难度，区分度分组
 	//分数段
-	//中等题等
 	//客观题选项统计，主观题得分统计
 	
 	
