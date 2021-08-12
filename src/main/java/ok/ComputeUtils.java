@@ -485,61 +485,24 @@ public class ComputeUtils {
 	
 	
 	//整个科目小题分组
-	public static <T> JSONArray subjectQuestionGroup(long subjectID,String subjectName,List<T> questions,ToDoubleFunction<T> scoreFun,Function<T,Integer> typeFun,Function<T,String> titleFun,List<Map<String, Object>> list) {
+	public static <T> List<Map<String, Object>> subjectQuestionGroup(long subjectID,String subjectName,List<T> questions,ToDoubleFunction<T> scoreFun,Function<T,Integer> typeFun,Function<T,String> titleFun,List<Map<String, Object>> list) {
 		//questions=LambdaUtils.filter(questions,  x->x.getLevel().length()==8);
 		
-		JSONArray result=new JSONArray();
-		List<Integer> types=Arrays.asList(1,0,2);//客观题，主观题，合计
-		Map<Integer, List<T>> typemap=LambdaUtils.groupby(questions, typeFun);
-		typemap=LambdaUtils.whole4group(typemap, types, x->x, new ArrayList<>());
-		typemap.put(2, questions);
-		
 		List<Map<String, Object>> groupby=ComputeUtils.questionGroup(questions,scoreFun,typeFun,titleFun,list);
-		
-		for(int type:types) {
-			JSONObject item=new JSONObject();
+		for(Map<String, Object> item:groupby) {
 			item.put("subjectName", subjectName);
 			item.put("subjectID", subjectID);
-			if(type==0) {
-				item.put("questionType", "非客观题");
-			}
-			else if(type==1) {
-				item.put("questionType", "客观题");
-			}
-			else{
-				item.put("questionType", "合计");
-			}
-			
-			int number= typemap.get(type).size();
-			double totalScore=MathUtils.round(typemap.get(type).stream().mapToDouble(scoreFun).sum());
-			item.put("number",number);
-			item.put("score", totalScore);
-			
-			
-			for(Map<String, Object> map:groupby) {
-				String key_number="number";
-				String key_numberrate="numberrate";
-				String key_score="score";
-				String key_rate="rate";
-				String key_questionNames="questionNames";
-				if(type!=2) {
-					key_number=key_number+"_"+type;
-					key_numberrate=key_numberrate+"_"+type;
-					key_score=key_score+"_"+type;
-					key_rate=key_rate+"_"+type;
-					key_questionNames=key_questionNames+"_"+type;
-				}
-				
-				JSONObject itemitem=new JSONObject();
-				itemitem.put("number", map.get(key_number));
-				itemitem.put("numberRate",  map.get(key_numberrate));
-				itemitem.put("score", map.get(key_score));
-				itemitem.put("rate", map.get(key_rate));
-				itemitem.put("questions",  map.get(key_questionNames));
-			}
-			result.add(item);
 		}
-		return result;
+		
+		 Map<Integer, List<Map<String, Object>>> map=LambdaUtils.groupby(groupby, x->Convert.toInt(x.get("questionType")));
+		
+		
+		List<Integer> types=Arrays.asList(1,0,2);//客观题，主观题，合计
+		
+		for(int type:types) {
+			map.get(type);
+		}
+		return groupby;
 	}
 	
 	
@@ -605,8 +568,6 @@ public class ComputeUtils {
 	
 	
 	
-	
-	//难度，区分度分组
 	//客观题选项统计，主观题得分统计
 	//学生小题得分也可以用score表，这样统计每个小题的得分会简单，客观题存储另外一个表格？
 	//均衡发展
