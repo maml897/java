@@ -282,15 +282,9 @@ public class ComputeUtils {
 	 * @param scorefun  分数数据
 	 * @return
 	 */
-	@SafeVarargs
-	public static <T> List<Map<String, Object>> computeScore(List<T> objects, Function<T, Double> scorefun, Collector<T, ?, Long>... cs)
+	public static <T> List<Map<String, Object>> computeScore(List<T> objects, Function<T, Double> scorefun)
 	{
-		Collector<T, ?, Long> c = Collectors.counting();
-		if (cs != null && cs.length > 0)
-		{
-			c = cs[0];
-		}
-		Map<Double, Long> group = LambdaUtils.groupby(objects, scorefun, c);
+		Map<Double, Long> group = LambdaUtils.groupby(objects, scorefun, Collectors.counting());
 		List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
 
 		int lastOrder = 1;
