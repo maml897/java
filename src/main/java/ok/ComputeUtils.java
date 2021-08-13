@@ -523,7 +523,15 @@ public class ComputeUtils {
 		return map;
 	}
 
-	// 小题分组，主要用于难度和区分度分组+主观题，客观题，总体分组
+	/**
+	 * // 小题分组，主要用于难度和区分度分组+主观题，客观题，总体分组
+	 * @param seQuestions 小题
+	 * @param scoreFun 分数
+	 * @param typeFun 主客观
+	 * @param titleFun 题目
+	 * @param predicates 划分标准
+	 * @return [难题-主观题；难题-客观题；难题-合计；简单题-主观题....]
+	 */
 	@SuppressWarnings("unchecked")
 	public static <T> List<Map<String, Object>> questionGroup(List<T> seQuestions,ToDoubleFunction<T> scoreFun,Function<T,Integer> typeFun,Function<T,String> titleFun,List<Map<String, Object>> predicates)
 	{
