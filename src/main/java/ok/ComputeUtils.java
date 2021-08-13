@@ -507,28 +507,21 @@ public class ComputeUtils {
 		return groupby;
 	}
 	
-	public static <T> List<Map<String, Object>> questionGroupInfo(List<T> questions,ToDoubleFunction<T> scoreFun,Function<T,Integer> typeFun,Function<T,String> titleFun,List<Map<String, Object>> list) {
-		
+	
+	/**
+	 * 用于饼状图得小题难度区分度统计
+	 * @param questions
+	 * @param scoreFun
+	 * @param typeFun
+	 * @param titleFun
+	 * @param list
+	 * @return
+	 */
+	public static <T> Map<String, Map<Integer, Map<String, Object>>> questionGroupInfo(List<T> questions,ToDoubleFunction<T> scoreFun,Function<T,Integer> typeFun,Function<T,String> titleFun,List<Map<String, Object>> list) {
 		List<Map<String, Object>> groupby=ComputeUtils.questionGroup(questions,scoreFun,typeFun,titleFun,list);
-		Map<Integer, Map<Integer, Map<String, Object>>> map=LambdaUtils.groupbymap(groupby, x->Convert.toInt(x.get("id")), x->Convert.toInt(x.get("questionType")));
-		
-		
-		Map<Integer, List<Map<String, Object>>>  map1=LambdaUtils.groupby(groupby,  x->Convert.toInt(x.get("id")));
-		
-		
-		List<Map<String, Object>> result =new ArrayList<>();
-		
-		for(int id:map.keySet()) {
-			
-		}
-		
-//		for(int type:types) {
-//			map.get(type);
-//		}
-		return groupby;
+		Map<String, Map<Integer, Map<String, Object>>> map=LambdaUtils.groupbymap(groupby, x->Convert.toStr(x.get("value")), x->Convert.toInt(x.get("questionType")));
+		return map;
 	}
-	
-	
 
 	// 小题分组，主要用于难度和区分度分组+主观题，客观题，总体分组
 	@SuppressWarnings("unchecked")
