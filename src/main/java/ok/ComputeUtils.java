@@ -489,25 +489,48 @@ public class ComputeUtils {
 		//questions=LambdaUtils.filter(questions,  x->x.getLevel().length()==8);
 		
 		List<Map<String, Object>> groupby=ComputeUtils.questionGroup(questions,scoreFun,typeFun,titleFun,list);
-		for(Map<String, Object> item:groupby) {
-			item.put("subjectName", subjectName);
-			item.put("subjectID", subjectID);
+//		for(Map<String, Object> item:groupby) {
+//			item.put("subjectName", subjectName);
+//			item.put("subjectID", subjectID);
+//		}
+		Map<Integer, Map<Integer, Map<String, Object>>> map=LambdaUtils.groupbymap(groupby, x->Convert.toInt(x.get("id")), x->Convert.toInt(x.get("questionType")));
+		
+		List<Map<String, Object>> result =new ArrayList<>();
+		
+		for(int id:map.keySet()) {
+			
 		}
 		
-		 Map<Integer, List<Map<String, Object>>> map=LambdaUtils.groupby(groupby, x->Convert.toInt(x.get("questionType")));
+//		for(int type:types) {
+//			map.get(type);
+//		}
+		return groupby;
+	}
+	
+	public static <T> List<Map<String, Object>> questionGroupInfo(List<T> questions,ToDoubleFunction<T> scoreFun,Function<T,Integer> typeFun,Function<T,String> titleFun,List<Map<String, Object>> list) {
+		
+		List<Map<String, Object>> groupby=ComputeUtils.questionGroup(questions,scoreFun,typeFun,titleFun,list);
+		Map<Integer, Map<Integer, Map<String, Object>>> map=LambdaUtils.groupbymap(groupby, x->Convert.toInt(x.get("id")), x->Convert.toInt(x.get("questionType")));
 		
 		
-		List<Integer> types=Arrays.asList(1,0,2);//客观题，主观题，合计
+		Map<Integer, List<Map<String, Object>>>  map1=LambdaUtils.groupby(groupby,  x->Convert.toInt(x.get("id")));
 		
-		for(int type:types) {
-			map.get(type);
+		
+		List<Map<String, Object>> result =new ArrayList<>();
+		
+		for(int id:map.keySet()) {
+			
 		}
+		
+//		for(int type:types) {
+//			map.get(type);
+//		}
 		return groupby;
 	}
 	
 	
 
-	// 小题分组，主要用于难度和区分度分组
+	// 小题分组，主要用于难度和区分度分组+主观题，客观题，总体分组
 	@SuppressWarnings("unchecked")
 	public static <T> List<Map<String, Object>> questionGroup(List<T> seQuestions,ToDoubleFunction<T> scoreFun,Function<T,Integer> typeFun,Function<T,String> titleFun,List<Map<String, Object>> predicates)
 	{
@@ -538,12 +561,9 @@ public class ComputeUtils {
 			group.put(2, questions);
 			
 			for(int type:group.keySet()) {
-				Map<String, Object> item =new HashMap<>();
-				item.put("id", map.get("id"));
-				item.put("name", map.get("name"));
-				
 				List<T> typequestions=group.get(type);
 				
+				Map<String, Object> item =new HashMap<>(map);
 				item.put("questionType", type);
 				item.put("questionTypeName", "合计");
 				if(type!=2) {
@@ -563,6 +583,7 @@ public class ComputeUtils {
 				
 				item.put("questionNames", LambdaUtils.list2list(typequestions, titleFun));
 				
+				item.remove("predicate");
 				result.add(item);
 			}
 		}
